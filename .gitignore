@@ -1,0 +1,21 @@
+# dependencies
+node_modules
+.pnp
+.pnp.js
+
+# misc
+.env
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+report/**
+report/json/*
+report/allure-results/*
+report/junit/*
+report/screenshot/*
+
+.lambdatest
+lambda_api.log
+tunnel.log
