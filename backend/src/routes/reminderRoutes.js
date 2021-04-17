@@ -2,6 +2,7 @@ const express = require('express')
 const router = express()
 const asyncHandler = require('express-async-handler')
 const Reminder = require('../models/reminderModel')
+const Subscription = require('../models/subscriptionModel')
 
 // Get All Reminders
 router.route('/').get(asyncHandler(async(req, res) => {
@@ -11,17 +12,35 @@ router.route('/').get(asyncHandler(async(req, res) => {
 }))
 
 // Create New Reminder
-router.route('/').post(asyncHandler(async(req, res) => {
-    Reminder.create(req.body, (err, reminder) => {
+router.route('/:subscriptionId').post(asyncHandler(async(req, res) => {
+    // find subscription to attach to reminder
+    Subscription.findById(req.params.subscriptionId, (err, subscription) => {
         if (err) {
             res.status(404)
-            res.redirect('/')
+            res.redirect('/reminders')
         } else {
-            reminder.save()
-            res.send(reminder) // temp
+            Reminder.create(req.body.nextRenewal, (err, reminder) => {
+                if (err) {
+                    res.status(404)
+                    res.redirect('/reminders')
+                } else {
+                    // associate reminder with subsciption
+                    reminder.subscription.id = subscription._id
+
+                    // associate reminder with user
+                    reminder.user.id = req.user._id
+                    reminder.user.username = req.user.username
+                    reminder.save()
+
+                    // associate user with reminder
+                    req.user.reminders.push(reminder)
+                    req.user.save()
+
+                    res.redirect('/reminders')
+                }
+            })
         }
-    })
-}))
+})}))
 
 // Delete Reminder
 router.route('/:reminderId').delete(asyncHandler(async(req, res) => {

@@ -10,6 +10,13 @@ const authRoutes = require('./routes/authRoutes')
 dotenv.config()
 connectMongo()
 
+// middleware to seek currentUser
+app.use((req, res, next) => {
+	res.locals.currentUser = req.user
+	res.locals.session = req.session
+	next()
+})
+
 app.use(express.json());
 
 

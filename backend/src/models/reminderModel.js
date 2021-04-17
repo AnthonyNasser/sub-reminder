@@ -1,33 +1,29 @@
 const mongoose = require('mongoose')
 
-const reminderSchema =  mongoose.Schema(
-    {
-        subscription : {
-            type: String,
-            required: true,
-            trim: true
-        },
-        nextDate : {
-            type: Date,
-            required: true
-        },
-        nextTime : {
-            type: String,
-            required: true,
-            trim: true
-        },
-        price: {
-            type: Number,
-            required: true
-        },
-        frequencyPerYear: {
-            type: Number,
-            required: true
+const reminderSchema = mongoose.Schema(
+	{
+		subscription: {
+            id : {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Subscription',
+            },
+            unique: true
+		},
+		nextRenewal: {
+			type: Date,
+			required: true,
+		},
+        user: {
+            id : {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User'
+            },
+            username: String
         }
-    },
-    {
-        timestamps: true,
-    }
+	},
+	{
+		timestamps: true,
+	}
 )
 
 const Reminder = mongoose.model('Reminder', reminderSchema)

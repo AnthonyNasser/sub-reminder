@@ -3,7 +3,17 @@ const bcrypt = require('bcryptjs')
 
 const userSchema = mongoose.Schema(
 	{
-		name: {
+		firstName: {
+			type: String,
+			required: true,
+			trim: true,
+		},
+		lastName: {
+			type: String,
+			required: true,
+			trim: true,
+		},
+		username: {
 			type: String,
 			required: true,
 			trim: true,
@@ -15,10 +25,22 @@ const userSchema = mongoose.Schema(
 			lowercase: true,
 			trim: true,
 		},
+		phoneNumber: {
+			type: Number,
+			required: true,
+			unique: true,
+			trim: true,
+		},
 		password: {
 			type: String,
 			required: true,
 		},
+		reminders: [{
+			id : {
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "Reminder"
+			}
+		}]
 	},
 	{
 		timestamps: true,
