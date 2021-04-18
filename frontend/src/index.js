@@ -4,6 +4,10 @@ import { ThemeProvider } from 'styled-components';
 import { BrowserRouter as Router} from 'react-router-dom'
 import Routes from './Routes';
 import { theme } from './theme';
+import configureStore from './redux/Store'
+import { Provider } from 'react-redux'
+
+export const store = configureStore()
 
 class App extends Component {
   constructor(props) {
@@ -12,11 +16,13 @@ class App extends Component {
   }
   render() {
     return(
+      <Provider store={store}>
       <ThemeProvider theme={theme}>
         <Router>
           <Routes />
         </Router>
       </ThemeProvider>
+      </Provider>
     )
   }
 }

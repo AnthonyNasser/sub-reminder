@@ -4,6 +4,9 @@ import { Form, Button, Row, Col } from 'react-bootstrap'
 import Message from '../styles/Message'
 import Loader from '../styles/Loader'
 import FormContainer from '../styles/FormContainer'
+import Request from '../../utils/Request'
+import { store } from '../../index'
+import { receiveCurrentUser } from '../../redux/actions/SessionAction'
 
 class LoginPage extends Component {
 	constructor(props) {
@@ -18,13 +21,23 @@ class LoginPage extends Component {
 	}
 
 	componentDidMount = () => {
-		console.log(this.props, "props")
+		console.log(this.props, 'props')
 		this.setState({ isLoading: false })
 	}
 
 	handleSubmit = (e) => {
 		e.preventDefault()
-		console.log(this.props, 'props')
+		new Request('/login')
+			.post({
+				email: this.state.email,
+				password: this.state.password,
+			})
+			.then((res) => {
+				if (res) {
+					store.dispatch(receiveCurrentUser(res.user))
+					this.props.history.push('/home')
+				}
+			})
 	}
 	render() {
 		return (
@@ -49,8 +62,8 @@ class LoginPage extends Component {
 							type="password"
 							placeholder="Please Enter Password"
 							value={this.state.password}
-							onChange={(e) => this.setState({ password: e.target.value })}>
-						</Form.Control>
+							onChange={(e) => this.setState({ password: e.target.value })}
+						></Form.Control>
 					</Form.Group>
 
 					<Button type="submit" variant="primary">
@@ -62,9 +75,7 @@ class LoginPage extends Component {
 					<Col>
 						<Row>New to the Site?</Row>
 						<Row>
-							<Link to='/register'>
-								Register here!
-							</Link>
+							<Link to="/register">Register here!</Link>
 						</Row>
 					</Col>
 				</Row>
