@@ -8,6 +8,8 @@ import HelpPage from './components/pages/HelpPage'
 import NotFoundPage from './components/pages/NotFoundPage'
 import SignupPage from './components/pages/SignupPage'
 import LoginPage from './components/pages/LoginPage'
+import ProtectedRoute from './utils/ProtectedRoute'
+import InverseProtectedRoute from './utils/InverseProtectedRoute'
 
 class Routes extends Component {
 	constructor(props) {
@@ -21,11 +23,11 @@ class Routes extends Component {
 				<NavBar />
 				<Switch>
 					<Route path="/" exact component={LandingPage} />
-					<Route path="/home" exact component={HomePage} />
 					<Route path="/about" exact component={AboutPage} />
 					<Route path="/help" exact component={HelpPage} />
-					<Route path="/login" exact component={LoginPage} />
-					<Route path="/register" exact component={SignupPage} />
+					<InverseProtectedRoute path="/login" exact component={LoginPage} />
+					<InverseProtectedRoute path="/register" exact component={SignupPage} />
+					<ProtectedRoute path="/home" exact component={HomePage} />
 					<Route component={NotFoundPage} />
 				</Switch>
 			</div>
