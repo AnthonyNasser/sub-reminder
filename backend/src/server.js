@@ -13,13 +13,7 @@ dotenv.config()
 connectMongo()
 
 app.use(express.json())
-app.use(cors({origin: true, credentials: true}));
-// middleware to seek currentUser
-app.use((req, res, next) => {
-	res.locals.currentUser = req.user
-	res.locals.session = req.session
-	next()
-})
+app.use(cors({ origin: true, credentials: true }))
 
 app.use('/api/v1/subscriptions', subscriptionRoutes)
 app.use('/api/v1/reminders', reminderRoutes)
