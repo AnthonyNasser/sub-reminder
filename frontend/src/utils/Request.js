@@ -8,10 +8,10 @@
          this.url = REQUEST_BASE_URL + endpoint
      }
 
-     get(params = {}) {
+     get(params = {}, headers = {}) {
          return new Promise((resolve, reject) => {
              axios
-                 .get(this.url, { params: params })
+                 .get(this.url, { params: params, headers: headers })
                  .then((res) => {
                      resolve(res.data ? (res.data) : null)
                  })

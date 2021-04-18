@@ -1,11 +1,21 @@
 import { createStore, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
 import reducer from './reducers/RootReducer'
-import { composeWithDevTools } from 'redux-devtools-extension';
+import { composeWithDevTools } from 'redux-devtools-extension'
+import { persistStore, persistReducer } from 'redux-persist'
+import storage from 'redux-persist/lib/storage' // defaults to localStorage for web
 
-// When in production uses redux dev tools otherwise use just use compose
-const composeEnhancers =  ( composeWithDevTools ) || compose
+const persistConfig = {
+	key: 'root',
+	storage,
+}
 
-const store = () => createStore(reducer, undefined, composeEnhancers(applyMiddleware(thunk)))
+const persistedReducer = persistReducer(persistConfig, reducer)
 
-export default store
+const composeEnhancers = composeWithDevTools || compose
+
+const store = createStore(persistedReducer, undefined, composeEnhancers(applyMiddleware(thunk)))
+
+export let persistor = persistStore(store)
+
+export default () => store

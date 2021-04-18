@@ -34,8 +34,8 @@ class LoginPage extends Component {
 			})
 			.then((res) => {
 				if (res) {
+					console.log(res, 'res')
 					store.dispatch(receiveCurrentUser(res.user))
-					this.props.history.push('/home')
 				}
 			})
 	}
