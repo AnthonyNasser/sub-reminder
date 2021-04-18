@@ -2,6 +2,7 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { LinkContainer } from 'react-router-bootstrap'
 import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap'
+import { store } from '../../index.js'
 
 const NavBar = () => {
 	return (
@@ -27,7 +28,9 @@ const NavBar = () => {
 								</Nav.Link>
 							</LinkContainer>
 							<NavDropdown
-								title={`${user.firstName} ${user.lastName}`}
+								title={`${store.getState().session.firstName} ${
+									store.getState().session.lastName
+								}`}
 								id="username"
 							></NavDropdown>
 							<LinkContainer to="/login">
