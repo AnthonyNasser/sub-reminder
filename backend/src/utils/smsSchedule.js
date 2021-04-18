@@ -1,11 +1,17 @@
 var moment = require('moment')
 require('dotenv').config()
+
+// !! -- !! -- !! URGENT URGENT URGENT URGENT URGENT !! -- !! -- !!
 // In order to demo:
 // set DemoMode to True!!!
-var live = true
 var demoMode = false
 apiKev = process.env.KEVINS_KEY
+
+//Live is seperate from demo mode, for testing purposes
+var live = true
 api = live ? process.env.MESSAGEBIRD_API_KEY : process.env.MESSAGEBIRD_TEST_API_KEY
+
+//This is the client for the call
 var messagebird = require('messagebird')(demoMode ? apiKev : api)
 
 //phone number is hardcoded since I'm the only recipent
@@ -41,18 +47,15 @@ function scheduleSms(recipentPhone, sms, sendDate, offSet) {
 				} else {
 					// Request was successful
 					console.log(response)
-					// Create and persist appointment object
 				}
 			}
 		)
 	} else {
 		var reminderDT = moment(sendDate)
 		console.log(
-			'Would send this normally to ' +
-				recipentPhone +
-				' But sending to Gio bc we using the free trial :)'
+			'Would send this normally to ' + recipentPhone + " But sending to Kevin's Cell for demo"
 		)
-		hardcodedPhone = '14247046084'
+		hardcodedPhone = '16263839929'
 
 		// Offset - How many hours before they want to recieve the sms
 		var adjReminderDT = reminderDT.clone().subtract({ seconds: offSet })
@@ -73,13 +76,13 @@ function scheduleSms(recipentPhone, sms, sendDate, offSet) {
 				} else {
 					// Request was successful
 					console.log(response)
-					// Create and persist appointment object
 				}
 			}
 		)
 	}
 }
 
+//Example Call:
 // scheduleSms("swssw","Hello My Guy",new Date("2021-04-17T23:59:53.272Z"),2)
 
 module.exports = scheduleSms
