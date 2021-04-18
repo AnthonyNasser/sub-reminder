@@ -5,6 +5,8 @@ const Reminder = require('../models/reminderModel')
 const setUpReminder = require('../utils/smsSchedule')
 const User = require('../models/userModel')
 const userAuth = require('../middleware/userAuth').userAuth
+const moment = require('moment')
+const momentTz = require('moment-timezone')
 
 // Get All Reminders
 router.route('/').get(
@@ -45,7 +47,7 @@ router.route('/:reminderId').delete(
 router.route('/:reminderId').get(
 	userAuth,
 	asyncHandler(async (req, res) => {
-		const reminder = await Reminder.findById(req.params.reminderId, (err, reminder) => {
+		await Reminder.findById(req.params.reminderId, (err, reminder) => {
 			if (err) {
 				console.log(err)
 				return res.status(404).json({
@@ -84,7 +86,7 @@ router.route('/:reminderId').put(
 			})
 		}
 
-		newRenewalDate = new Date(nextRenewal.toString())
+		newRenewalDate = moment(nextRenewal)
 
 		Reminder.findByIdAndUpdate(req.params.reminderId, req.body, (err, newReminder) => {
 			if (err) {
@@ -113,12 +115,12 @@ router.route('/:reminderId').put(
 								' for ' +
 								newReminder.subscription.subName +
 								' on ' +
-								newRenewalDate.getMonth() +
-								'-' +
-								newRenewalDate.getDay() +
-								'-' +
-								newRenewalDate.getFullYear() +
-								' .Visit https://url.com to manage your notifications. Later!',
+								'04' +
+								' / ' +
+								'18' +
+								' / ' +
+								'2021' +
+								'. Visit https://url.com to manage your notifications. Sub Ya Later!',
 							newRenewalDate,
 							0 //Offset of 24 hours
 						)
