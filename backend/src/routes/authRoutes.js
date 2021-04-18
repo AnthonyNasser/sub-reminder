@@ -47,7 +47,7 @@ router.route('/login').post(asyncHandler(async (req, res) => {
 
 // Register Route
 router.route('/register').post(asyncHandler(async (req, res) => {
-	const { firstName, lastName, username, email, phoneNumber, password } = req.body
+	const { firstName, lastName, username, email, phoneNumber, password, confPassword } = req.body
 
 	// Guard Clauses
 	if (!firstName) {
@@ -92,6 +92,13 @@ router.route('/register').post(asyncHandler(async (req, res) => {
 		})
 		return
 	}
+	if (!confPassword) {
+		res.status(400).json({
+			success: false,
+			message: 'Invalid password',
+		})
+		return
+	}
 
 	// Check if User already exists by email
 	const userExists = await User.findOne({ email }, (err, user) => {
@@ -110,6 +117,13 @@ router.route('/register').post(asyncHandler(async (req, res) => {
 		})
 	}
 
+	if (password !== confPassword) {
+		return res.status(400).json({
+			success: false,
+			message: 'Passwords do not match',
+		})
+	}
+	
 	// Continue with creation if they don't
 	const user = await User.create({
 		firstName,
