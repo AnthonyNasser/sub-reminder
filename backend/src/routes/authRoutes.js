@@ -35,7 +35,7 @@ router.route('/login').post(asyncHandler(async (req, res) => {
         return res.status(200).json({
 			success: true,
 			message: 'Login successful',
-			user: user,
+			token: generateToken(user._id),
 		})
     } else {
         return res.status(401).json({
@@ -135,10 +135,12 @@ router.route('/register').post(asyncHandler(async (req, res) => {
 	})
 
 	if (user) {
+		user.password = undefined
 		return res.status(201).json({
 			success: true,
 			message: 'User successfully registered',
-			user: user,
+			user,
+			token: generateToken(user._id),
 		})
 	} else {
 		return res.status(500).json({

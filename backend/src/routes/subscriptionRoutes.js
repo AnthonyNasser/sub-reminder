@@ -51,7 +51,6 @@ router.route('/newSubscription').post(
 
 		Subscription.create(req.body, (err, subscription) => {
 			subscription = req.body
-			console.log(subscription, 'subscription')
 			if (err) {
 				return res.status(400).json({
 					success: false,
@@ -69,17 +68,12 @@ router.route('/newSubscription').post(
 						})
 					}
 					if (reminder) {
-						res.status(200).json({
+						return res.status(200).json({
 							success: true,
 							message: 'Successfully initialized reminder',
 							reminder: reminder,
 						})
 					}
-				})
-				return res.status(200).json({
-					success: true,
-					message: 'Successfully created subscription',
-					subscription: subscription,
 				})
 			}
 		})

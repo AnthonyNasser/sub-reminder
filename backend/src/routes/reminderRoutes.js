@@ -14,72 +14,81 @@ router.route('/').get(asyncHandler(async(req, res) => {
 	})
 }))
 
-// Create New Reminder
-router.route('/:subscriptionId').post(asyncHandler(async(req, res) => {
-    // find subscription to attach to reminder
-    Subscription.findById(req.params.subscriptionId, (err, subscription) => {
-        if (err) {
-            res.status(404)
-            console.error('There was an error finding Subscription')
-            res.redirect('/reminders')
-        } else {
-            Reminder.create(req.body, (err, reminder) => {
-				if (err) {
-					res.status(404)
-					res.redirect('/reminders')
-				} else {
-					// associate reminder with subsciption
-					reminder.subscription.id = subscription._id
-					console.log(req.user)
-					// associate reminder with user
-					reminder.user.id = req.user._id
-					reminder.user.username = req.user.username
-					reminder.save()
-
-					// associate user with reminder
-					req.user.reminders.push(reminder)
-					req.user.save()
-
-					res.redirect('/reminders')
-				}
-			})
-        }
-})}))
-
 // Delete Reminder
 router.route('/:reminderId').delete(asyncHandler(async(req, res) => {
     Reminder.findByIdAndDelete(req.params.reminderId, (err, reminder) => {
         if (err) {
-			res.status(404)
-			res.redirect('/')
-		} else {
-			res.send('Successfully deleted Reminder!')
+			console.log(err)
+			return res.status(404).json({
+				success: false,
+				message: 'Failed to delete reminder',
+			})
+		}
+		if (reminder) {
+			return res.status(200).json({
+				success: true,
+				message: 'Succesfully deleted reminder',
+			})
 		}
     })
 }))
 
 // Find specific Reminder
 router.route('/:reminderId').get(asyncHandler(async(req, res) => {
-    const reminder = await Reminder.findById(req.params.reminderId)
-    if (err) {
-        res.status(404)
-        throw new Error('Reminder not found')
-    } else {
-        res.json(reminder)
-        res.send(reminder) // temp
-    }
-}))
-
-// Update reminder
-router.route('/:reminderId').put(asyncHandler(async(req, res) => {
-    Reminder.findByIdAndUpdate(req.params.reminderId, req.body, (err, updatedReminder) => {
+    const reminder = await Reminder.findById(req.params.reminderId, (err, reminder) => {
         if (err) {
-            res.status(404)
-            throw new Error('Reminder not found')
-        } else {
-            res.send(updatedReminder)
+            console.log(err)
+            return res.status(404).json({
+                success: false,
+                message: 'Reminder not found',
+            })
+        } 
+        if (reminder) {
+            return res.status(200).json({
+                success: true,
+                message: 'Reminder found',
+                reminder: reminder
+            })
         }
     })
 }))
+
+// Edit Reminder
+router.route('/:reminderId').put(
+	asyncHandler(async (req, res) => {
+		const { nextRenewal } = req.body
+        if (!nextRenewal) {
+            res.status(400).json({
+                success: false,
+                message: 'Invalid next renewal date',
+            })
+            return
+        }
+		let newRenewalDate = Date.parse(nextRenewal.toString())
+		if (isNaN(newRenewalDate)) {
+			res.status(400).json({
+				success: false,
+				message: 'Invalid next renewal date'
+			})
+		}
+
+		newRenewalDate = new Date(nextRenewal.toString())
+		
+		Reminder.findByIdAndUpdate(req.params.reminderId, req.body, (err, newReminder) => {
+			if (err) {
+				return res.status(404).json({
+					success: false,
+					message: 'Could not update Reminder',
+				})
+			} 
+			if (newReminder) {
+				return res.status(200).json({
+					success: true,
+					message: 'Succesfully updated Reminder',
+				})
+			}
+		})
+	})
+)
 
 module.exports = router

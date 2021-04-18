@@ -10,6 +10,7 @@ const reminderSchema = mongoose.Schema(
 		nextRenewal: {
 			type: Date,
 			required: false,
+			default: new Date(),
 		},
 	},
 	{
