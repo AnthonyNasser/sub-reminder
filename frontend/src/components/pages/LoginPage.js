@@ -26,6 +26,7 @@ class LoginPage extends Component {
 
 	handleSubmit = (e) => {
 		e.preventDefault()
+		console.log(this.props, 'props')
 	}
 	render() {
 		return (
