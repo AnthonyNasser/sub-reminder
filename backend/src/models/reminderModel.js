@@ -3,12 +3,13 @@ const Subscription = require('../models/subscriptionModel')
 
 const reminderSchema = mongoose.Schema(
 	{
-		subscription: { 
-            type: Subscription.schema,
-            required: true 
-        },
+		subscription: {
+			type: Subscription.schema,
+			required: true,
+		},
 		nextRenewal: {
 			type: Date,
+			required: false,
 		},
 	},
 	{
