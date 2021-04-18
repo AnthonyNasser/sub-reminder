@@ -80,7 +80,7 @@ router.route('/:reminderId').put(
 					success: false,
 					message: 'Could not update Reminder',
 				})
-			} 
+			}
 			if (newReminder) {
 				return res.status(200).json({
 					success: true,
