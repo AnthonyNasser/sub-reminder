@@ -27,5 +27,4 @@ class App extends Component {
 			</Provider>
 		)
 	}
-}
 ReactDOM.render(<App />, document.getElementById('root'))

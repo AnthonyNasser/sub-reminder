@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Route, Switch, withRouter } from 'react-router-dom'
-import SiteHeader from './components/nav/SiteHeader'
+import NavBar from './components/styles/NavBar'
 import LandingPage from './components/pages/LandingPage'
 import AboutPage from './components/pages/AboutPage'
 import HomePage from './components/pages/HomePage'
@@ -20,7 +20,7 @@ class Routes extends Component {
 	render() {
 		return (
 			<div>
-				<SiteHeader />
+				<NavBar />
 				<Switch>
 					<Route path="/" exact component={LandingPage} />
 					<Route path="/about" exact component={AboutPage} />
