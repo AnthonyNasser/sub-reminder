@@ -3,19 +3,25 @@ const router = express()
 const asyncHandler = require('express-async-handler')
 const Subscription = require('../models/subscriptionModel')
 const Reminder = require('../models/reminderModel')
+const User = require('../models/userModel')
+const userAuth = require('../middleware/userAuth').userAuth
 
 // Get All Subscriptions
-router.route('/').get(asyncHandler(async(req, res) => {
-    const allSubscriptions = await Subscription.find({})
-   	return res.status(200).json({
-		success: true,
-		message: 'Successfully grabbed all subscriptions',
-		subscriptions: allSubscriptions,
+router.route('/').get(
+	userAuth,
+	asyncHandler(async (req, res) => {
+		const allSubscriptions = await Subscription.find({})
+		return res.status(200).json({
+			success: true,
+			message: 'Successfully grabbed all subscriptions',
+			subscriptions: allSubscriptions,
+		})
 	})
-}))
+)
 
 // Create New Subscription
 router.route('/newSubscription').post(
+	userAuth,
 	asyncHandler(async (req, res) => {
 		const { subName, yearlyFrequency, price, type } = req.body
 
@@ -68,11 +74,25 @@ router.route('/newSubscription').post(
 						})
 					}
 					if (reminder) {
-						return res.status(200).json({
-							success: true,
-							message: 'Successfully initialized reminder',
-							reminder: reminder,
+						User.findById(req.userId, (err, foundUser) => {
+							if (err) {
+								return res.status(400).json({
+									success: false,
+									message: 'User not found'
+								})
+							}
+							if (foundUser) {
+								foundUser.reminders.push(reminder)
+								foundUser.markModified("reminders")
+								foundUser.save()
+								return res.status(200).json({
+									success: true,
+									message: 'Successfully initialized reminder',
+									reminder: reminder,
+								})
+							}
 						})
+					
 					}
 				})
 			}
@@ -82,6 +102,7 @@ router.route('/newSubscription').post(
 
 // Delete subscription
 router.route('/:subscriptionId').delete(
+	userAuth,
 	asyncHandler(async (req, res) => {
 		Subscription.findByIdAndDelete(req.params.subscriptionId, (err, subscription) => {
 			if (err) {
@@ -102,6 +123,7 @@ router.route('/:subscriptionId').delete(
 
 // Find specific Subscription
 router.route('/:subscriptionId').get(
+	userAuth,
 	asyncHandler(async (req, res) => {
 		Subscription.findById(req.params.subscriptionId, (err, subscription) => {
 			if (err) {
@@ -122,22 +144,27 @@ router.route('/:subscriptionId').get(
 
 // Edit Subscription
 router.route('/:subscriptionId').put(
+	userAuth,
 	asyncHandler(async (req, res) => {
 		const { subName, yearlyFrequency, price, type } = req.body
-		Subscription.findByIdAndUpdate(req.params.subscriptionId, req.body, (err, newSubscription) => {
-			if (err) {
-				return res.status(404).json({
-					success: false,
-					message: 'Could not update subscription',
-				})
-			} 
-			if (newSubscription) {
-				return res.status(200).json({
-					success: true,
-					message: 'Succesfully updated subscription',
-				})
+		Subscription.findByIdAndUpdate(
+			req.params.subscriptionId,
+			req.body,
+			(err, newSubscription) => {
+				if (err) {
+					return res.status(404).json({
+						success: false,
+						message: 'Could not update subscription',
+					})
+				}
+				if (newSubscription) {
+					return res.status(200).json({
+						success: true,
+						message: 'Succesfully updated subscription',
+					})
+				}
 			}
-		})
+		)
 	})
 )
 

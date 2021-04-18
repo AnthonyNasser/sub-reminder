@@ -4,9 +4,11 @@ const asyncHandler = require('express-async-handler')
 const Reminder = require('../models/reminderModel')
 const setUpReminder = require('../utils/smsSchedule')
 const User = require('../models/userModel')
+const userAuth = require('../middleware/userAuth').userAuth
 
 // Get All Reminders
 router.route('/').get(
+	userAuth,
 	asyncHandler(async (req, res) => {
 		const allReminders = await Reminder.find({})
 		return res.status(200).json({
@@ -19,6 +21,7 @@ router.route('/').get(
 
 // Delete Reminder
 router.route('/:reminderId').delete(
+	userAuth,
 	asyncHandler(async (req, res) => {
 		Reminder.findByIdAndDelete(req.params.reminderId, (err, reminder) => {
 			if (err) {
@@ -40,6 +43,7 @@ router.route('/:reminderId').delete(
 
 // Find specific Reminder
 router.route('/:reminderId').get(
+	userAuth,
 	asyncHandler(async (req, res) => {
 		const reminder = await Reminder.findById(req.params.reminderId, (err, reminder) => {
 			if (err) {
@@ -62,6 +66,7 @@ router.route('/:reminderId').get(
 
 // Edit Reminder
 router.route('/:reminderId').put(
+	userAuth,
 	asyncHandler(async (req, res) => {
 		const { nextRenewal } = req.body
 		if (!nextRenewal) {

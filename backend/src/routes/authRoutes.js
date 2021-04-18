@@ -51,12 +51,6 @@ router.route('/login').post(
 		}
 	})
 )
-// router.route('/logout').delete(asyncHandler(async (req, res) => {
-// 	return res.status(200).json({
-// 		success: true,
-// 		message: 'Successfully Logged Out'
-// 	})
-// }))
 
 // Register Route
 router.route('/register').post(

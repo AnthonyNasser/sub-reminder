@@ -3,21 +3,21 @@ require('dotenv').config()
 
 // !! -- !! -- !! URGENT URGENT URGENT URGENT URGENT !! -- !! -- !!
 // In order to demo:
-// set DemoMode to True!!!
+// !!! set DemoMode to True !!!
 var demoMode = false
 apiKev = process.env.KEVINS_KEY
 
-//Live is seperate from demo mode, for testing purposes
-var live = true
+// Live is seperate from demo mode, for testing purposes
+var live = false
 api = live ? process.env.MESSAGEBIRD_API_KEY : process.env.MESSAGEBIRD_TEST_API_KEY
 
-//This is the client for the call
+// This is the client for the call
 var messagebird = require('messagebird')(demoMode ? apiKev : api)
 
-//phone number is hardcoded since I'm the only recipent
-//sms is a string to send
-//date is a date object to be turned into a moment
-//offSet is how long before the date they want to be reminded
+// phone number is hardcoded since I'm the only recipent
+// sms is a string to send
+// date is a date object to be turned into a moment
+// offSet is how long before the date they want to be reminded
 function scheduleSms(recipentPhone, sms, sendDate, offSet) {
 	if (!demoMode) {
 		var reminderDT = moment(sendDate)
