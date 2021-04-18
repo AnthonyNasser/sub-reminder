@@ -4,6 +4,9 @@ import { Form, Button, Row, Col } from 'react-bootstrap'
 import Message from '../styles/Message'
 import Loader from '../styles/Loader'
 import FormContainer from '../styles/FormContainer'
+import Request from '../../utils/Request'
+import { store } from '../../index'
+import { receiveCurrentUser } from '../../redux/actions/SessionAction'
 
 class SignupPage extends Component {
 	constructor(props) {
@@ -24,10 +27,23 @@ class SignupPage extends Component {
 
 	handleSubmit = (e) => {
 		e.preventDefault()
-		if (this.state.password !== this.state.confirmPassword) {
+		if (this.state.password !== this.state.confPassword) {
 			this.setState({ message: 'Passwords do not match!' })
 		} else {
-			// LOGIN GOES HERE
+			new Request('/register')
+				.post({
+					firstName: this.state.firstName,
+					lastName: this.state.lastName,
+					username: this.state.username,
+					email: this.state.email,
+					phoneNumber: this.state.phoneNumber,
+					password: this.state.password,
+					confPassword: this.state.confPassword,
+				})
+				.then((res) => {
+					store.dispatch(receiveCurrentUser(res.user))
+					this.props.history.push('/login')
+				})
 		}
 	}
 	componentDidMount() {
@@ -47,7 +63,7 @@ class SignupPage extends Component {
 							type="firstName"
 							placeholder="Please Enter First Name"
 							value={this.state.firstname}
-							onChange={(e) => this.setState({ firstname: e.target.value })}
+							onChange={(e) => this.setState({ firstName: e.target.value })}
 						></Form.Control>
 					</Form.Group>
 
@@ -57,12 +73,12 @@ class SignupPage extends Component {
 							type="lastName"
 							placeholder="Please Enter Last Name"
 							value={this.state.lastName}
-							onChange={(e) => this.setState({ lastname: e.target.value })}
+							onChange={(e) => this.setState({ lastName: e.target.value })}
 						></Form.Control>
 					</Form.Group>
 
 					<Form.Group controlId="username">
-						<Form.Label>Last Name</Form.Label>
+						<Form.Label>Username</Form.Label>
 						<Form.Control
 							type="username"
 							placeholder="Please Enter Username"
