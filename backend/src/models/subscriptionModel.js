@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 const subscriptionSchema = mongoose.Schema(
 	{
-		name: {
+		subName: {
 			type: String,
 			required: true,
 			trim: true,
@@ -14,6 +14,11 @@ const subscriptionSchema = mongoose.Schema(
 		},
 		price: {
 			type: Number,
+			required: true,
+		},
+		type: {
+			type: String,
+			default: 'Standard',
 			required: true,
 		},
 	},

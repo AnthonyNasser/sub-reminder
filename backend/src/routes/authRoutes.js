@@ -9,40 +9,111 @@ const generateToken = require('../utils/generateToken')
 router.route('/login').post(asyncHandler(async (req, res) => {
     const { email, password } = req.body
 
-    const user = await User.findOne({email})
+	if (!email) {
+		res.status(400).json({
+			success: false,
+			message: 'Invalid email',
+		})
+		return
+	}
+	if (!password) {
+		res.status(400).json({
+			success: false,
+			message: 'Invalid password',
+		})
+		return
+	}
+
+	const user = await User.findOne({ email }, (err, user) => {
+		if (err) {
+			res.status(500)
+			throw new Error('No email found')
+		}
+	})
     
     if (user && (await user.matchPassword(password))) { 
-		res.status(201).json({
-			_id: user._id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-			username: user.username,
-			email: user.email,
-			phoneNumber: user.phoneNumber,
-			token: generateToken(user._id),
+        return res.status(200).json({
+			success: true,
+			message: 'Login successful',
+			user: user,
 		})
-        res.send(user)
     } else {
-        res.status(401)
-        throw new Error('Invalid Email or Password.')
+        return res.status(401).json({
+			success: false,
+			message: 'User Authorization failed',
+		})
     }
 }))
 
 // Register Route
 router.route('/register').post(asyncHandler(async (req, res) => {
-    const { firstName, lastName, username, email, phoneNumber, password, } = req.body
+	const { firstName, lastName, username, email, phoneNumber, password } = req.body
 
-    // Check if User already exists by email
-    const userExists = await User.findOne({ email })
-    if (userExists) {
-		res.status(400)
-		throw new Error('User already exists.')
+	// Guard Clauses
+	if (!firstName) {
+		res.status(400).json({
+			success: false,
+			message: 'Invalid firstName',
+		})
+		return
+	}
+	if (!lastName) {
+		res.status(400).json({
+			success: false,
+			message: 'Invalid lastName',
+		})
+		return
+	}
+	if (!username) {
+		res.status(400).json({
+			success: false,
+			message: 'Invalid username',
+		})
+		return
+	}
+	if (!email) {
+		res.status(400).json({
+			success: false,
+			message: 'Invalid email',
+		})
+		return
+	}
+	if (!phoneNumber) {
+		res.status(400).json({
+			success: false,
+			message: 'Invalid phoneNumber',
+		})
+		return
+	}
+	if (!password) {
+		res.status(400).json({
+			success: false,
+			message: 'Invalid password',
+		})
+		return
 	}
 
-    // Continue with creation if they don't
+	// Check if User already exists by email
+	const userExists = await User.findOne({ email }, (err, user) => {
+		if (err) {
+			return res.status(500).json({
+				success: false,
+				message: 'No email found',
+			})
+		}
+	})
+
+	if (userExists) {
+		return res.status(400).json({
+			success: false,
+			message: 'User with that email already exists',
+		})
+	}
+
+	// Continue with creation if they don't
 	const user = await User.create({
-        firstName,
-        lastName,
+		firstName,
+		lastName,
 		username,
 		email,
 		phoneNumber,
@@ -50,19 +121,16 @@ router.route('/register').post(asyncHandler(async (req, res) => {
 	})
 
 	if (user) {
-		res.status(201).json({
-			_id: user._id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-			username: user.username,
-			email: user.email,
-			phoneNumber: user.phoneNumber,
-			token: generateToken(user._id),
+		return res.status(201).json({
+			success: true,
+			message: 'User successfully registered',
+			user: user,
 		})
-        res.send(user)
 	} else {
-		res.status(400)
-		throw new Error('Problem with User data')
+		return res.status(500).json({
+			success: false,
+			message: 'Error registering User',
+		})
 	}
 }))
 

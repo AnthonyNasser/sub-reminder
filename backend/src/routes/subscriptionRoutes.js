@@ -2,25 +2,40 @@ const express = require('express')
 const router = express()
 const asyncHandler = require('express-async-handler')
 const Subscription = require('../models/subscriptionModel')
+const Reminder = require('../models/reminderModel')
 
 // Get All Subscriptions
-router.route('/').get(
-	asyncHandler(async (req, res) => {
-		const allSubscriptions = await Subscription.find({})
-		res.json(allSubscriptions)
-		console.log(allSubscriptions)
+router.route('/').get(asyncHandler(async(req, res) => {
+    const allSubscriptions = await Subscription.find({})
+   	return res.status(200).json({
+		success: true,
+		message: 'Successfully grabbed all subscriptions',
+		subscriptions: allSubscriptions,
 	})
-)
+}))
 
 // Create New Subscription
 router.route('/').post(
 	asyncHandler(async (req, res) => {
+		const { subName, yearlyFrequency, price } = req.body
 		Subscription.create(req.body, (err, subscription) => {
+			subscription = req.body
+			console.log(subscription, 'subscription')
 			if (err) {
-				res.status(401)
-				res.send('There was an error creating Subscription')
-			} else {
-				res.send(subscription)
+				return res.status(400).json({
+					success: false,
+					message: 'Failed to create subscription'
+				})
+			} 
+			if (subscription) {
+				Reminder.create({
+					
+				})
+				return res.status(200).json({
+					success: true,
+					message: 'Successfully created subscription',
+					subscription: subscription
+				})
 			}
 		})
 	})

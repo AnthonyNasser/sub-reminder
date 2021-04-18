@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
+const Reminder = require('../models/reminderModel')
 
 const userSchema = mongoose.Schema(
 	{
@@ -27,6 +28,8 @@ const userSchema = mongoose.Schema(
 		},
 		phoneNumber: {
 			type: Number,
+			maxLength: 11,
+			minLength: 10,
 			required: true,
 			unique: true,
 			trim: true,
@@ -35,12 +38,7 @@ const userSchema = mongoose.Schema(
 			type: String,
 			required: true,
 		},
-		reminders: [{
-			id : {
-				type: mongoose.Schema.Types.ObjectId,
-				ref: "Reminder"
-			}
-		}]
+		reminders: { type: [Reminder.schema] },
 	},
 	{
 		timestamps: true,

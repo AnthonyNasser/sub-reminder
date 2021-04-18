@@ -7,8 +7,11 @@ const Subscription = require('../models/subscriptionModel')
 // Get All Reminders
 router.route('/').get(asyncHandler(async(req, res) => {
     const allReminders = await Reminder.find({})
-    res.json(allReminders)
-    console.log(allReminders)
+    return res.status(200).json({
+		success: true,
+		message: 'Successfully grabbed all reminders',
+		reminders: allReminders,
+	})
 }))
 
 // Create New Reminder
