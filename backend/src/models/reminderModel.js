@@ -20,3 +20,5 @@ const reminderSchema = mongoose.Schema(
 
 const Reminder = mongoose.model('Reminder', reminderSchema)
 module.exports = Reminder
+
+//"Hello NAME this is your SubReminder for Netflix: you need to pay $54 on 4/4/4! Visit https://url.com to configure reminders"
