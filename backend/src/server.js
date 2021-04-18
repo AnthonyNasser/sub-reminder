@@ -19,11 +19,9 @@ app.use('/api/v1/subscriptions', subscriptionRoutes)
 app.use('/api/v1/reminders', reminderRoutes)
 app.use('/api/v1', authRoutes)
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, (err) =>
-    console.log(`${err ? err : `Running on port ${PORT}`}`),
-)
+const PORT = process.env.PORT || 5000
+app.listen(PORT, (err) => console.log(`${err ? err : `Running on port ${PORT}`}`))
 
 process.on('uncaughtException', function (err) {
-	console.log(err);
-  })
+	console.log(err)
+})
