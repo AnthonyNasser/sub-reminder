@@ -1,8 +1,5 @@
-We wanted a make an application that can track expenses without having the user release all their personal financial banking information. We believe that everyone should have access to software that allows them to manage their money without having to know everything about them.
 
 # SubRemind
-
-## Inspiration
 We wanted a make an application that can track expenses without having the user release all their personal financial banking information. We believe that everyone should have access to software that allows them to manage their money without having to know everything about them.
 
 ## What it does
